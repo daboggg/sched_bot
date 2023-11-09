@@ -2,12 +2,13 @@ import asyncio
 import logging.config
 
 from aiogram import Bot, Dispatcher, F
+from aiogram.filters import Command
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from core.middlewares.apschedmiddleware import SchedulerMiddleware
 
-from core.handlers.basic import get_start
+from core.handlers.basic import cmd_get_start, cmd_date
 from core.handlers.callback import *
 
 from core.settings import settings
@@ -41,6 +42,9 @@ async def start() -> None:
 
     dp.startup.register(start_bot)
     dp.shutdown.register(stop_bot)
+    
+    dp.message.register(cmd_get_start, Command(commands=['start']))
+    dp.message.register(cmd_date, Command(commands=['date']))
 
     try:
         await dp.start_polling(bot)

@@ -1,14 +1,15 @@
 from aiogram import Bot
 from aiogram.types import Message
+from datetime import date
+from core.keyboards.inline import kb_get_calendar
+
+# Стартовое меню, выводит две кнопки: Интервал, Дата
+async def cmd_get_start(message: Message) -> None:
+    await message.answer(f'Для получения сигнала через определенный интервал, выберите в меню <b>/interval</b>\n\n'
+                         f'Для получения сигнала в определенную дату/время, выберите в меню <b>/date</b>',
+                         parse_mode="HTML")
 
 
-async def get_start(message: Message) -> None:
-    # await bot.send_message(message.from_user.id, f'<tg-spoiler>Привет {message.from_user.first_name}. Рад тебя видеть!</tg-spoiler>')
-    await message.answer(f'<b>Привет {message.from_user.first_name}. Рад тебя видеть!</b>')
-    # await message.reply(f'<s>Привет {message.from_user.first_name}. Рад тебя видеть!</s>')
-    # await message.answer(f'Для получения сигнала через определенный интервал, нажмите на кнопку \"Интервал\"\n'
-    #                      f'Для получения сигнала в определенную дату/время, нажмите на кнопку \"Дата\"',
-    #                      reply_markup=get_start_keyboard())
-
-
-
+# выводит календарь для ввода даты
+async def cmd_date(message: Message) -> None:
+    await message.answer("Введите дату сигнала", reply_markup=kb_get_calendar(date.today()))

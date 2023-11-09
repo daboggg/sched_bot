@@ -8,6 +8,14 @@ async def set_commands(bot: Bot):
             command='start',
             description='Нажмите для начала работы'
         ),
+        BotCommand(
+            command='interval',
+            description='сигнал через определенный интервал'
+        ),
+        BotCommand(
+            command='date',
+            description='сигнал в определенную дату/время'
+        ),
     ]
 
     await bot.set_my_commands(commands, BotCommandScopeDefault())
