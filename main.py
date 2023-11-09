@@ -1,4 +1,5 @@
 import asyncio
+import bdb
 import logging.config
 
 from aiogram import Bot, Dispatcher, F
@@ -23,10 +24,12 @@ logger = logging.getLogger('app_logger')
 async def start_bot(bot: Bot) -> None:
     await set_commands(bot)
     await bot.send_message(settings.bots.admin_id, text='Бот запущен!')
+    logger.info('Бот запущен!')
 
 
 async def stop_bot(bot: Bot) -> None:
     await bot.send_message(settings.bots.admin_id, text='Бот остановлен!')
+    logger.info('Бот остановлен!')
 
 
 async def start() -> None:
@@ -48,9 +51,12 @@ async def start() -> None:
     dp.callback_query.register(cb_empty, F.data == 'empty')
     dp.callback_query.register(cb_change_month, ChangeMonthCallbackData.filter())
     dp.callback_query.register(cb_select_month, SelectMonthCallbackData.filter())
+    dp.callback_query.register(cb_change_year, ChangeYearCallbackData.filter())
 
     try:
         await dp.start_polling(bot)
+    except Exception as ex:
+        logger.error(exc_info=ex)
     finally:
         await bot.session.close()
 

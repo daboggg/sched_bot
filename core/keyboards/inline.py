@@ -2,10 +2,10 @@ import calendar
 
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from datetime import date
-from core.utils.app_data import days_of_week, months_of_year
+from core.utils.app_data import days_of_week, months_of_year, months_of_year_full_name
 
 # инлайн клавиатура календарь, выбор даты
-from core.utils.callbackdata import ChangeMonthCallbackData, SelectMonthCallbackData
+from core.utils.callbackdata import ChangeMonthCallbackData, SelectMonthCallbackData, ChangeYearCallbackData
 
 
 def kb_get_calendar(s_date: date) -> InlineKeyboardMarkup:
@@ -51,11 +51,23 @@ def kb_get_calendar(s_date: date) -> InlineKeyboardMarkup:
 
 def kb_select_month(year: int) -> InlineKeyboardMarkup:
     today = date.today()
+    row = []
+    start_month = today.month if today.year == year else 1
     ikm = InlineKeyboardMarkup(inline_keyboard=[
         [
-            InlineKeyboardButton(text='<', callback_data='empty'),
+            InlineKeyboardButton(text='<', callback_data=ChangeYearCallbackData(increase=False, year=year).pack()),
             InlineKeyboardButton(text=f'{year}', callback_data='empty'),
-            InlineKeyboardButton(text='>', callback_data='empty')
+            InlineKeyboardButton(text='>', callback_data=ChangeYearCallbackData(increase=True, year=year).pack())
         ],
     ])
+    for month in months_of_year_full_name[start_month - 1:]:
+        if len(row) == 4:
+            ikm.inline_keyboard.append(row)
+            row = []
+        if today.year == year and month == months_of_year_full_name[today.month-1]:
+            row.append(InlineKeyboardButton(text=f'[{month}]', callback_data='empty'))
+        else:
+            row.append(InlineKeyboardButton(text=month, callback_data='empty'))
+    ikm.inline_keyboard.append(row)
+    ikm.inline_keyboard.append([InlineKeyboardButton(text='Отмена', callback_data='empty')])
     return ikm

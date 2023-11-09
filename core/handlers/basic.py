@@ -12,4 +12,4 @@ async def cmd_get_start(message: Message) -> None:
 
 # выводит календарь для ввода даты
 async def cmd_date(message: Message) -> None:
-    await message.answer("Введите дату сигнала", reply_markup=kb_get_calendar(date(2024,1,1)))
+    await message.answer("Введите дату сигнала", reply_markup=kb_get_calendar(date(2023,8,1)))

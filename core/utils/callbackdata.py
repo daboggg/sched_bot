@@ -9,3 +9,8 @@ class ChangeMonthCallbackData(CallbackData, prefix='change_month'):
 
 class SelectMonthCallbackData(CallbackData,prefix='select_month'):
     year: int
+
+
+class ChangeYearCallbackData(CallbackData, prefix='change_year'):
+    increase: bool
+    year: int
