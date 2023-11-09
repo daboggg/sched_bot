@@ -1,12 +1,21 @@
 from aiogram.types import CallbackQuery
 import logging.config
-from core.keyboards.inline import kb_get_calendar, kb_select_month
+from core.keyboards.inline import kb_get_calendar, kb_select_month, kb_select_year
 from core.utils.callbackdata import ChangeMonthCallbackData, SelectMonthCallbackData, ChangeYearCallbackData
 from datetime import date
 from log_settings import logger_config
 
 logging.config.dictConfig(logger_config)
 logger = logging.getLogger('core.handlers.callback')
+
+
+# Стартовое меню, выводит две кнопки: Интервал, Дата
+async def cb_get_start(callback: CallbackQuery) -> None:
+    await callback.message.answer(f'Для получения сигнала через определенный интервал, выберите в меню <b>/interval</b>\n\n'
+                         f'Для получения сигнала в определенную дату/время, выберите в меню <b>/date</b>',
+                         parse_mode="HTML")
+    await callback.answer()
+    logger.info('get_start callback')
 
 
 # колбэк без исполнения
@@ -56,3 +65,11 @@ async def cb_change_year(callback: CallbackQuery, callback_data: ChangeYearCallb
             await callback.message.edit_reply_markup(reply_markup=kb_select_month(year - 1))
     await callback.answer()
     logger.info(f'смена года: {callback_data}')
+
+
+# колбэк для выбора года
+async def cb_select_year(callback: CallbackQuery) -> None:
+    await callback.message.edit_text("Введите год сигнала")
+    await callback.message.edit_reply_markup(reply_markup=kb_select_year())
+    await callback.answer()
+    logger.info(f'выбор года: {callback.data}')

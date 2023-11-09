@@ -42,16 +42,17 @@ async def start() -> None:
     dp = Dispatcher()
     # dp.update.middleware.register(SchedulerMiddleware(scheduler))
 
-
     dp.startup.register(start_bot)
     dp.shutdown.register(stop_bot)
-    
+
     dp.message.register(cmd_get_start, Command(commands=['start']))
     dp.message.register(cmd_date, Command(commands=['date']))
     dp.callback_query.register(cb_empty, F.data == 'empty')
+    dp.callback_query.register(cb_get_start, F.data == 'cancel')
     dp.callback_query.register(cb_change_month, ChangeMonthCallbackData.filter())
     dp.callback_query.register(cb_select_month, SelectMonthCallbackData.filter())
     dp.callback_query.register(cb_change_year, ChangeYearCallbackData.filter())
+    dp.callback_query.register(cb_select_year, F.data == 'select_year')
 
     try:
         await dp.start_polling(bot)
@@ -59,7 +60,6 @@ async def start() -> None:
         logger.error(exc_info=ex)
     finally:
         await bot.session.close()
-
 
 
 if __name__ == '__main__':
