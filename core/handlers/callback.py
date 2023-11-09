@@ -1,7 +1,8 @@
 from aiogram.types import CallbackQuery
 import logging.config
 from core.keyboards.inline import kb_get_calendar, kb_select_month, kb_select_year
-from core.utils.callbackdata import ChangeMonthCallbackData, SelectMonthCallbackData, ChangeYearCallbackData
+from core.utils.callbackdata import ChangeMonthCallbackData, SelectMonthCallbackData, ChangeYearCallbackData, \
+    SelectDateCallbackData
 from datetime import date
 from log_settings import logger_config
 
@@ -11,9 +12,10 @@ logger = logging.getLogger('core.handlers.callback')
 
 # Стартовое меню, выводит две кнопки: Интервал, Дата
 async def cb_get_start(callback: CallbackQuery) -> None:
-    await callback.message.answer(f'Для получения сигнала через определенный интервал, выберите в меню <b>/interval</b>\n\n'
-                         f'Для получения сигнала в определенную дату/время, выберите в меню <b>/date</b>',
-                         parse_mode="HTML")
+    await callback.message.answer(
+        f'Для получения сигнала через определенный интервал, выберите в меню <b>/interval</b>\n\n'
+        f'Для получения сигнала в определенную дату/время, выберите в меню <b>/date</b>',
+        parse_mode="HTML")
     await callback.answer()
     logger.info('get_start callback')
 
@@ -22,6 +24,14 @@ async def cb_get_start(callback: CallbackQuery) -> None:
 async def cb_empty(callback: CallbackQuery) -> None:
     await callback.answer()
     logger.info('empty callback')
+
+
+# выводит календарь для ввода даты
+async def cb_get_date(callback: CallbackQuery, callback_data: SelectDateCallbackData) -> None:
+    await callback.message.edit_text("Введите дату сигнала")
+    await callback.message.edit_reply_markup(
+        reply_markup=kb_get_calendar(date(callback_data.year, callback_data.month, 1)))
+    await callback.answer()
 
 
 # колбэк для смены месяца (+1 или -1 месяц)

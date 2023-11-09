@@ -53,6 +53,7 @@ async def start() -> None:
     dp.callback_query.register(cb_select_month, SelectMonthCallbackData.filter())
     dp.callback_query.register(cb_change_year, ChangeYearCallbackData.filter())
     dp.callback_query.register(cb_select_year, F.data == 'select_year')
+    dp.callback_query.register(cb_get_date, SelectDateCallbackData.filter())
 
     try:
         await dp.start_polling(bot)

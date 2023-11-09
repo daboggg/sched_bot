@@ -8,7 +8,8 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from core.utils.app_data import days_of_week, months_of_year, months_of_year_full_name
 
 # инлайн клавиатура календарь, выбор даты
-from core.utils.callbackdata import ChangeMonthCallbackData, SelectMonthCallbackData, ChangeYearCallbackData
+from core.utils.callbackdata import ChangeMonthCallbackData, SelectMonthCallbackData, ChangeYearCallbackData, \
+    SelectDateCallbackData
 
 
 def kb_get_calendar(s_date: date) -> InlineKeyboardMarkup:
@@ -68,9 +69,9 @@ def kb_select_month(year: int) -> InlineKeyboardMarkup:
             ikm.inline_keyboard.append(row)
             row = []
         if today.year == year and month == months_of_year_full_name[today.month - 1]:
-            row.append(InlineKeyboardButton(text=f'[{month}]', callback_data='empty'))
+            row.append(InlineKeyboardButton(text=f'[{month}]', callback_data=SelectDateCallbackData(year=year, month=months_of_year_full_name.index(month)+1).pack()))
         else:
-            row.append(InlineKeyboardButton(text=month, callback_data='empty'))
+            row.append(InlineKeyboardButton(text=month, callback_data=SelectDateCallbackData(year=year, month=months_of_year_full_name.index(month)+1).pack()))
     ikm.inline_keyboard.append(row)
     ikm.inline_keyboard.append([InlineKeyboardButton(text='Отмена', callback_data='cancel')])
     return ikm
@@ -80,7 +81,7 @@ def kb_select_year() -> InlineKeyboardMarkup:
     year = date.today().year
     ikb = InlineKeyboardBuilder()
     for i in range(0, 10):
-        ikb.button(text=f'{year + i}', callback_data='empty')
+        ikb.button(text=f'{year + i}', callback_data=SelectMonthCallbackData(year=year + i))
     ikb.button(text='Отмена', callback_data='cancel')
     ikb.adjust(5, 5, 1)
     return ikb.as_markup()
