@@ -1,19 +1,17 @@
 import asyncio
-import bdb
 import logging.config
 
-from aiogram import Bot, Dispatcher, F
-from aiogram.filters import Command
+from aiogram import Bot, Dispatcher
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from core.middlewares.apschedmiddleware import SchedulerMiddleware
 
-from core.handlers.basic import cmd_get_start, cmd_date
-from core.handlers.callback import *
+from core.handlers.basic import  basic_router
+from core.handlers.callback import callback_router
+from core.handlers.calendar_callback import calendar_callback_router
 
 from core.settings import settings
-from core.utils.callbackdata import *
 from core.utils.commands import set_commands
 from log_settings import logger_config
 
@@ -45,20 +43,16 @@ async def start() -> None:
     dp.startup.register(start_bot)
     dp.shutdown.register(stop_bot)
 
-    dp.message.register(cmd_get_start, Command(commands=['start']))
-    dp.message.register(cmd_date, Command(commands=['date']))
-    dp.callback_query.register(cb_empty, F.data == 'empty')
-    dp.callback_query.register(cb_get_start, F.data == 'cancel')
-    dp.callback_query.register(cb_change_month, ChangeMonthCallbackData.filter())
-    dp.callback_query.register(cb_select_month, SelectMonthCallbackData.filter())
-    dp.callback_query.register(cb_change_year, ChangeYearCallbackData.filter())
-    dp.callback_query.register(cb_select_year, F.data == 'select_year')
-    dp.callback_query.register(cb_get_date, SelectDateCallbackData.filter())
+    dp.include_routers(
+        basic_router,
+        callback_router,
+        calendar_callback_router
+    )
 
     try:
         await dp.start_polling(bot)
     except Exception as ex:
-        logger.error(exc_info=ex)
+        logger.error(ex)
     finally:
         await bot.session.close()
 
