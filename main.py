@@ -45,6 +45,9 @@ async def start() -> None:
     
     dp.message.register(cmd_get_start, Command(commands=['start']))
     dp.message.register(cmd_date, Command(commands=['date']))
+    dp.callback_query.register(cb_empty, F.data == 'empty')
+    dp.callback_query.register(cb_change_month, ChangeMonthCallbackData.filter())
+    dp.callback_query.register(cb_select_month, SelectMonthCallbackData.filter())
 
     try:
         await dp.start_polling(bot)

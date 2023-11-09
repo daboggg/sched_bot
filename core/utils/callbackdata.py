@@ -9,4 +9,3 @@ class ChangeMonthCallbackData(CallbackData, prefix='change_month'):
 
 class SelectMonthCallbackData(CallbackData,prefix='select_month'):
     year: int
-    month: int
