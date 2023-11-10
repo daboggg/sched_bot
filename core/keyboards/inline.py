@@ -116,4 +116,9 @@ def kb_select_minute() -> InlineKeyboardMarkup:
     return ikb.as_markup()
 
 
-# def kb_confirm_date_time()-> InlineKeyboardMarkup
+def kb_confirm_date_time()-> InlineKeyboardMarkup:
+    ikb = InlineKeyboardBuilder()
+    ikb.button(text='Подтвердить', callback_data='сonfirm_datetime')
+    ikb.button(text='Отмена', callback_data='cancel')
+    ikb.adjust(2)
+    return ikb.as_markup()

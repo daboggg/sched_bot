@@ -3,7 +3,7 @@ from aiogram import Router, F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 
-from core.keyboards.inline import kb_select_minute
+from core.keyboards.inline import kb_select_minute, kb_confirm_date_time
 from core.utils.callbackdata import SelectHourCallbackData, SelectMinuteCallbackData
 from core.utils.statesform import StepsDateTime
 from log_settings import logger_config
@@ -38,4 +38,6 @@ async def cb_select_minute(callback: CallbackQuery, state: FSMContext, callback_
                                      f"{context.get('month')}-{context.get('day')}\n"
                                      f"выбранное время: {context.get('hour')}:{callback_data.minute}:00\n"
                                      f"подтвердите выбор")
+    await callback.message.edit_reply_markup(reply_markup=kb_confirm_date_time())
+    await state.set_state(StepsDateTime.CONFIRM_DATETIME)
     logger.info(f'выбрана минута {callback_data}')
