@@ -9,7 +9,7 @@ from core.utils.app_data import days_of_week, months_of_year, months_of_year_ful
 
 # инлайн клавиатура календарь, выбор даты
 from core.utils.callbackdata import ChangeMonthCallbackData, SelectMonthCallbackData, ChangeYearCallbackData, \
-    SelectDateCallbackData
+    SelectDateCallbackData, ReadyDateCallbackData, SelectHourCallbackData, SelectMinuteCallbackData
 
 
 def kb_get_calendar(s_date: date) -> InlineKeyboardMarkup:
@@ -36,14 +36,21 @@ def kb_get_calendar(s_date: date) -> InlineKeyboardMarkup:
                 week.append(InlineKeyboardButton(text=' ', callback_data='empty'))
             else:
                 if today.day == d:
-                    week.append(InlineKeyboardButton(text=f'[{d}]', callback_data='empty'))
+                    week.append(InlineKeyboardButton(text=f'[{d}]',
+                                                     callback_data=ReadyDateCallbackData(year=s_date.year,
+                                                                                         month=s_date.month,
+                                                                                         day=d).pack()))
                 else:
-                    week.append(InlineKeyboardButton(text=f'{d}', callback_data='empty'))
+                    week.append(InlineKeyboardButton(text=f'{d}', callback_data=ReadyDateCallbackData(year=s_date.year,
+                                                                                                      month=s_date.month,
+                                                                                                      day=d).pack()))
         else:
             if d <= 0:
                 week.append(InlineKeyboardButton(text=' ', callback_data='empty'))
             else:
-                week.append(InlineKeyboardButton(text=f'{d}', callback_data='empty'))
+                week.append(InlineKeyboardButton(text=f'{d}', callback_data=ReadyDateCallbackData(year=s_date.year,
+                                                                                                  month=s_date.month,
+                                                                                                  day=d).pack()))
 
     for d in range(7 - len(week)):
         week.append(InlineKeyboardButton(text=' ', callback_data='empty'))
@@ -69,9 +76,13 @@ def kb_select_month(year: int) -> InlineKeyboardMarkup:
             ikm.inline_keyboard.append(row)
             row = []
         if today.year == year and month == months_of_year_full_name[today.month - 1]:
-            row.append(InlineKeyboardButton(text=f'[{month}]', callback_data=SelectDateCallbackData(year=year, month=months_of_year_full_name.index(month)+1).pack()))
+            row.append(InlineKeyboardButton(text=f'[{month}]', callback_data=SelectDateCallbackData(year=year,
+                                                                                                    month=months_of_year_full_name.index(
+                                                                                                        month) + 1).pack()))
         else:
-            row.append(InlineKeyboardButton(text=month, callback_data=SelectDateCallbackData(year=year, month=months_of_year_full_name.index(month)+1).pack()))
+            row.append(InlineKeyboardButton(text=month, callback_data=SelectDateCallbackData(year=year,
+                                                                                             month=months_of_year_full_name.index(
+                                                                                                 month) + 1).pack()))
     ikm.inline_keyboard.append(row)
     ikm.inline_keyboard.append([InlineKeyboardButton(text='Отмена', callback_data='cancel')])
     return ikm
@@ -85,3 +96,24 @@ def kb_select_year() -> InlineKeyboardMarkup:
     ikb.button(text='Отмена', callback_data='cancel')
     ikb.adjust(5, 5, 1)
     return ikb.as_markup()
+
+
+def kb_select_hour() -> InlineKeyboardMarkup:
+    ikb = InlineKeyboardBuilder()
+    for h in range(0, 24):
+        ikb.button(text=f'{h}', callback_data=SelectHourCallbackData(hour=h))
+    ikb.button(text='Отмена', callback_data='cancel')
+    ikb.adjust(6)
+    return ikb.as_markup()
+
+
+def kb_select_minute() -> InlineKeyboardMarkup:
+    ikb = InlineKeyboardBuilder()
+    for m in range(0, 60):
+        ikb.button(text=f'{m}', callback_data=SelectMinuteCallbackData(minute=m))
+    ikb.button(text='Отмена', callback_data='cancel')
+    ikb.adjust(6)
+    return ikb.as_markup()
+
+
+# def kb_confirm_date_time()-> InlineKeyboardMarkup

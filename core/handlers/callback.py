@@ -14,3 +14,5 @@ callback_router = Router()
 async def cb_empty(callback: CallbackQuery) -> None:
     await callback.answer()
     logger.info('empty callback')
+
+
