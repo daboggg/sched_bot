@@ -7,13 +7,10 @@ from apscheduler.executors.pool import ThreadPoolExecutor
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-from core.handlers.datetime_message import datetime_message_router
-from core.handlers.time_callback import time_callback_router
+from core.handlers.date import date_router
 from core.middlewares.apschedmiddleware import SchedulerMiddleware
 
 from core.handlers.basic import  basic_router
-from core.handlers.callback import callback_router
-from core.handlers.date_callback import date_callback_router
 
 from core.settings import settings
 from core.utils.commands import set_commands
@@ -51,10 +48,7 @@ async def start() -> None:
 
     dp.include_routers(
         basic_router,
-        callback_router,
-        date_callback_router,
-        time_callback_router,
-        datetime_message_router,
+        date_router,
     )
 
     try:
