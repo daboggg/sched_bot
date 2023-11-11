@@ -15,10 +15,3 @@ async def cmd_get_start(message: Message) -> None:
     await message.answer(f'Для получения сигнала через определенный интервал, выберите в меню <b>/interval</b>\n\n'
                          f'Для получения сигнала в определенную дату/время, выберите в меню <b>/date</b>',
                          parse_mode="HTML")
-
-
-# выводит календарь для ввода даты
-@basic_router.message(Command(commands=['date']))
-async def cmd_date(message: Message, state: FSMContext) -> None:
-    await message.answer("Введите дату сигнала", reply_markup=kb_get_calendar(date.today()))
-    await state.set_state(StepsDateTime.GET_DATE)

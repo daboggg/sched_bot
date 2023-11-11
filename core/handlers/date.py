@@ -2,6 +2,7 @@ import logging.config
 from datetime import date, datetime
 
 from aiogram import Router, F, Bot
+from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -28,6 +29,13 @@ async def send_message_date(bot: Bot, chat_id: int, text: str) -> None:
 async def cb_empty(callback: CallbackQuery) -> None:
     await callback.answer()
     logger.info('empty callback')
+
+
+# выводит календарь для ввода даты
+@date_router.message(Command(commands=['date']))
+async def cmd_date(message: Message, state: FSMContext) -> None:
+    await message.answer("Введите дату сигнала", reply_markup=kb_get_calendar(date.today()))
+    await state.set_state(StepsDateTime.GET_DATE)
 
 
 # Стартовое меню, выводит две кнопки: Интервал, Дата
